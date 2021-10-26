@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { AppProps /*, AppContext */ } from "next/app";
 import PropTypes from "prop-types";
 import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
@@ -10,13 +11,14 @@ import createEmotionCache from "../createEmotionCache";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
-export default function MyApp(props) {
+export default function MyApp(props: AppProps) {
+  // @ts-ignore
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        <title>My page</title>
+        <title>Squid Game</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={theme}>

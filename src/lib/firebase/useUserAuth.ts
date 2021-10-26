@@ -13,5 +13,5 @@ export default function useUserAuth() {
     setUser(user);
   });
 
-  return [loading, firebaseUser];
+  return { loading, user: firebaseUser };
 }

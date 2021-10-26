@@ -1,12 +1,87 @@
-import { Grid } from "@mui/material";
-import React, { FormEvent, useState } from "react";
+import { Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import Auth from "../components/Auth";
 import useUserAuth from "../lib/firebase/useUserAuth";
-import runCodeOnPiston from "../lib/piston/runCodeOnPiston";
+import {
+  DocumentData,
+  onSnapshot,
+  getFirestore,
+  query,
+  collection,
+  where,
+  setDoc,
+  doc,
+  getDocs,
+  DocumentSnapshot,
+} from "firebase/firestore";
+import app from "../lib/firebase/clientApp";
+import formatMillisecondsToTimer from "../lib/format/formatMillisecondsToTimer";
 
 export default function Home() {
-  const [loading, user] = useUserAuth();
-  console.log(user);
+  const db = getFirestore(app);
+
+  // Grab user from Firebase Authentication using custom hook
+  const { loading, user } = useUserAuth();
+  // Store a reference to the next upcoming game document from Firestore
+  const [nextGameRef, setNextGameRef] =
+    useState<DocumentSnapshot<DocumentData>>();
+  // Stateful value to calculate the remaining time until the next game begins.
+  const [remainingTime, setRemainingTime] = useState<number>(0);
+
+  useEffect(() => {
+    (async function getNextGame() {
+      // Make the query for the waiting document
+      const q = query(
+        collection(db, "games"),
+        where("status", "==", "waiting")
+      );
+      const querySnapshot = await getDocs(q);
+      const waitingGameDocRef = querySnapshot.docs[0].ref;
+
+      // Then listen for live updates on that specific doc
+      const unsub = onSnapshot(waitingGameDocRef, (doc) => {
+        setNextGameRef(doc);
+      });
+    })();
+  }, [db]);
+
+  useEffect(() => {
+    if (nextGameRef) {
+      const nextStartTime =
+        nextGameRef.data()?.startTime.seconds * 1000 + 60 * 1000; // add a minute til game actually starts
+      const timeTilStart = nextStartTime - Date.now(); // milliseconds
+      setRemainingTime(timeTilStart);
+    }
+  }, [nextGameRef]);
+
+  // Timer to countdown until game begins
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRemainingTime((remainingTime) => remainingTime - 1000);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Once the user is available, join them into the "waiting game"
+  useEffect(() => {
+    (async function addPlayer() {
+      if (user && nextGameRef) {
+        const db = getFirestore(app);
+        await setDoc(doc(db, `games/${nextGameRef.id}/players/${user.uid}`), {
+          id: user.uid,
+          displayName: user.displayName,
+          status: "alive",
+        });
+        console.log(`games/${nextGameRef.id}/players/${user.uid}`);
+      }
+    })();
+  }, [user, nextGameRef]);
+
+  // Display, you will join game id: "doc id",
+  // In the client, listen for the update when the game goes to "inProgress"
+  console.log(nextGameRef?.data()?.status);
+  // when it does, navigate user on the client to /game/[id]
+  // from there, we can read the questions and begin the game.
 
   return (
     <Grid
@@ -22,7 +97,40 @@ export default function Home() {
         <div>Loading</div>
       ) : (
         <div>
-          {user && "hey user"}
+          {user && (
+            <Grid
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              spacing={1}
+            >
+              <Grid item>
+                <Typography variant="h3">
+                  Hello, {user.displayName !== "" ? user.displayName + "." : ""}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="h6">
+                  The next game will begin in:
+                </Typography>
+              </Grid>
+              <Grid item>
+                {/* Firebase Game document will store what time the game should start. (1 minute after the doc is created) */}
+                {/* Grab that value and minus the current time, convert that time to minutes and seconds and display it here */}
+                {/* Update it every 1 second until it hits 0, at which point the game id the user is a part of should kick off */}
+                <Typography variant="h2">
+                  {formatMillisecondsToTimer(remainingTime)}
+                </Typography>
+              </Grid>
+
+              <Grid item>
+                <Typography variant="subtitle2">
+                  You will be automatically connected.
+                </Typography>
+              </Grid>
+            </Grid>
+          )}
           {!user && <Auth />}
         </div>
       )}
