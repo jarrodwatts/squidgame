@@ -16,9 +16,11 @@ import {
 } from "firebase/firestore";
 import app from "../lib/firebase/clientApp";
 import formatMillisecondsToTimer from "../lib/format/formatMillisecondsToTimer";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const db = getFirestore(app);
+  const router = useRouter();
 
   // Grab user from Firebase Authentication using custom hook
   const { loading, user } = useUserAuth();
@@ -39,7 +41,7 @@ export default function Home() {
       const waitingGameDocRef = querySnapshot.docs[0].ref;
 
       // Then listen for live updates on that specific doc
-      const unsub = onSnapshot(waitingGameDocRef, (doc) => {
+      onSnapshot(waitingGameDocRef, (doc) => {
         setNextGameRef(doc);
       });
     })();
@@ -72,16 +74,16 @@ export default function Home() {
           displayName: user.displayName,
           status: "alive",
         });
-        console.log(`games/${nextGameRef.id}/players/${user.uid}`);
+        console.log(`game/${nextGameRef.id}/players/${user.uid}`);
       }
     })();
   }, [user, nextGameRef]);
 
-  // Display, you will join game id: "doc id",
   // In the client, listen for the update when the game goes to "inProgress"
-  console.log(nextGameRef?.data()?.status);
   // when it does, navigate user on the client to /game/[id]
-  // from there, we can read the questions and begin the game.
+  if (nextGameRef?.data()?.status === "inProgress") {
+    router.push(`/game/${nextGameRef.id}`);
+  }
 
   return (
     <Grid
