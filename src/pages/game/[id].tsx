@@ -31,6 +31,8 @@ import LanguageDropdown from "../../components/LanguageDropdown";
 import Player from "../../types/Player";
 import SuccessSnackbar from "../../components/SuccessSnackbar";
 import Auth from "../../components/Auth";
+import { TwitterShareButton, TwitterIcon } from "react-share";
+
 const CodeEditor = dynamic(import("../../components/CodeEditor"), {
   ssr: false,
 });
@@ -218,13 +220,26 @@ export default function GameId({}: Props): ReactElement {
                 />
               </Grid>
               <Grid item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => router.push(`/`)}
-                >
-                  Play Again
-                </Button>
+                <Grid container direction="row" spacing={3}>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => router.push(`/`)}
+                    >
+                      Play Again
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <div className="centerContent">
+                      <div className="selfCenter">
+                        <TwitterShareButton url="i survived the coding interview question squid game. can you? https://squidgame-eight.vercel.app/">
+                          <TwitterIcon size={36} style={{ borderRadius: 4 }} />
+                        </TwitterShareButton>
+                      </div>
+                    </div>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
