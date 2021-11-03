@@ -17,6 +17,7 @@ import {
 import app from "../lib/firebase/clientApp";
 import formatMillisecondsToTimer from "../lib/format/formatMillisecondsToTimer";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Home() {
   const db = getFirestore(app);
@@ -132,6 +133,14 @@ export default function Home() {
               <Grid item>
                 <Typography variant="subtitle2">
                   You will be automatically connected.
+                </Typography>
+              </Grid>
+
+              <Grid item>
+                <Typography variant="subtitle2">
+                  <Link href="https://www.youtube.com/c/JarrodWatts/videos">
+                    <a target="_blank">Made by Jarrod Watts</a>
+                  </Link>
                 </Typography>
               </Grid>
             </Grid>
