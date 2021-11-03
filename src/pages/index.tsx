@@ -84,7 +84,7 @@ export default function Home() {
 
   // In the client, listen for the update when the game goes to "inProgress"
   // when it does, navigate user on the client to /game/[id]
-  if (nextGameRef?.data()?.status === "inProgress") {
+  if (nextGameRef?.data()?.status === "inProgress" && user) {
     router.push(`/game/${nextGameRef.id}`);
   }
 
