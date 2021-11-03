@@ -22,6 +22,7 @@ import {
   updateDoc,
   increment,
   onSnapshot,
+  setDoc,
 } from "firebase/firestore";
 import app from "../../lib/firebase/clientApp";
 import Leaderboard from "../../components/Leaderboard";
@@ -54,6 +55,8 @@ export default function GameId({}: Props): ReactElement {
 
   // Manage successful submission state to show snackbar component
   const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
+
+  const [victory, setVictory] = useState<boolean>(false);
 
   useEffect(() => {
     (async function getQuestions() {
@@ -117,10 +120,16 @@ export default function GameId({}: Props): ReactElement {
       if (result?.success === true) {
         // If answer is correct then update player score by 1
         setShowSnackbar(true);
-
         await updateDoc(playerRef, {
           score: increment(1),
         });
+
+        if (activeQuestionIndex != 2) {
+          setActiveQuestionIndex(activeQuestionIndex + 1);
+        } else {
+          // Display victory screen!
+          setVictory(true);
+        }
 
         // Also send this player to the next question
         setActiveQuestionIndex(activeQuestionIndex + 1);
@@ -146,6 +155,18 @@ export default function GameId({}: Props): ReactElement {
   // Get the current player from the players array in state using the user's UID
   const currentPlayer = players.find((player) => player.id === user?.uid);
 
+  // If the user is not in the game, then add them to it
+  if (!currentPlayer && user) {
+    const playerRef = doc(db, `games/${id}/players/${user.uid}`);
+    setDoc(playerRef, {
+      id: user.uid,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      status: "alive",
+      score: 0,
+    });
+  }
+
   if (loading) {
     return (
       <div
@@ -159,6 +180,56 @@ export default function GameId({}: Props): ReactElement {
       >
         <CircularProgress color="primary" />
       </div>
+    );
+  }
+
+  if (victory) {
+    return (
+      <Container maxWidth="xl" style={{ height: "95vh", marginTop: "64px" }}>
+        <Grid
+          style={{ height: "100%" }}
+          container
+          direction="row"
+          alignItems="center"
+          justifyContent="center"
+          spacing={5}
+        >
+          <Grid item xs={12}>
+            <Grid
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              spacing={1}
+            >
+              <Grid item>
+                <Typography variant="h2">
+                  <b>Congratulations</b>, you won the Coding Squid Game!
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Leaderboard
+                  players={players}
+                  style={{
+                    width: "auto",
+                    overflowY: "auto",
+                    maxHeight: 421.5,
+                  }}
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => router.push(`/`)}
+                >
+                  Play Again
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Container>
     );
   }
 
@@ -289,6 +360,16 @@ export default function GameId({}: Props): ReactElement {
                   >
                     Play Again
                   </Button>
+                </Grid>
+                <Grid item>
+                  <Leaderboard
+                    players={players}
+                    style={{
+                      width: "auto",
+                      overflowY: "auto",
+                      maxHeight: 421.5,
+                    }}
+                  />
                 </Grid>
               </Grid>
             </Grid>

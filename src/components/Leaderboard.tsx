@@ -12,14 +12,15 @@ import capitalizeFirst from "../lib/format/capitalizeFirst";
 
 interface Props {
   players: Player[];
+  style?: any;
 }
 
-export default function Leaderboard({ players }: Props) {
+export default function Leaderboard({ players, style }: Props) {
   console.log(players);
   return (
     <TableContainer
       component={Paper}
-      style={{ maxHeight: 421.5, overflowY: "auto" }}
+      style={style ?? { maxHeight: 421.5, overflowY: "auto" }}
     >
       <Table aria-label="simple table">
         <TableHead>
