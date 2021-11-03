@@ -95,7 +95,7 @@ export default function GameId({}: Props): ReactElement {
         setPlayers(thisGamesPlayers);
       }
     })();
-  }, [id]);
+  }, [db, id]);
 
   async function handleSubmit() {
     const result = await runCodeOnPiston(
