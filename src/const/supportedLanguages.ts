@@ -1,7 +1,7 @@
 const supportedLanguages: string[] = [
   "javascript",
-  "typescript",
   "python",
+  // "typescript",
   //   "c",
   //   "c++",
   //   "c#",

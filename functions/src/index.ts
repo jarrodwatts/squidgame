@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import admin = require("firebase-admin");
+import * as admin from "firebase-admin";
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -23,8 +23,10 @@ exports.scheduledFunction = functions.pubsub
     const waitingGameDoc = waitingGameQuery.docs[0].ref;
     waitingGameDoc.update({ status: "inProgress" });
 
-    // A function that generates a new random number between 1 and 10
-    const randomNumber = () => (Math.floor(Math.random() * 10) + 1).toString();
+    // A function that generates a new random number between 1 and 8
+    const randomNumber = (): string => {
+      return (Math.floor(Math.random() * 8) + 1).toString();
+    };
 
     // Generate three random numbers that are not the same
     while (

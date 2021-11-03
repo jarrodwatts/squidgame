@@ -18,12 +18,21 @@ export default async function runCodeOnPiston(
     const output = result.run.output;
     // Trim output to exclude new lines and \n
     const outputString = output.trim();
-    console.log(outputString);
+
+    console.log("Expected:", acceptedAnswers, "Provided:", outputString);
 
     if (acceptedAnswers.includes(outputString)) {
-      return true;
+      return {
+        success: true,
+        message: "Correct!",
+      };
     } else {
-      return false;
+      return {
+        success: false,
+        message: "Incorrect!",
+        expected: acceptedAnswers.join(", "),
+        provided: outputString,
+      };
     }
   } catch (error) {
     console.error("Error occurred running code on client", error);

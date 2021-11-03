@@ -6,22 +6,21 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Player from "../types/Player";
+import { Avatar, Grid, Typography } from "@mui/material";
+import capitalizeFirst from "../lib/format/capitalizeFirst";
 
-function createData(name: string, calories: number, fat: number) {
-  return { name, calories, fat };
+interface Props {
+  players: Player[];
 }
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0),
-  createData("Ice cream sandwich", 237, 9.0),
-  createData("Eclair", 262, 16.0),
-  createData("Cupcake", 305, 3.7),
-  createData("Gingerbread", 356, 16.0),
-];
-
-export default function BasicTable() {
+export default function Leaderboard({ players }: Props) {
+  console.log(players);
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      style={{ maxHeight: 421.5, overflowY: "auto" }}
+    >
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -31,16 +30,23 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {players.map((player) => (
             <TableRow
-              key={row.name}
+              key={player.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                <Grid container direction="row" alignItems="center" spacing={1}>
+                  <Grid item>
+                    <Avatar alt={player.displayName} src={player.photoURL} />
+                  </Grid>
+                  <Grid item>{player.displayName}</Grid>
+                </Grid>
               </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
+              <TableCell align="right">
+                <Typography>{capitalizeFirst(player.status)}</Typography>
+              </TableCell>
+              <TableCell align="right">{player.score}</TableCell>
             </TableRow>
           ))}
         </TableBody>

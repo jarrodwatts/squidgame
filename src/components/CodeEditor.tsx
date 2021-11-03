@@ -1,6 +1,7 @@
 import React, { ReactElement, useState } from "react";
 import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/theme-terminal";
 
 interface Props {
@@ -14,12 +15,13 @@ export default function CodeEditor({
   setCode,
   defaultText,
 }: Props): ReactElement {
+  console.log(defaultText);
   return (
     <AceEditor
       style={{ width: "100%" }}
       fontSize={16}
       mode={language}
-      defaultValue={defaultText}
+      value={defaultText}
       theme="terminal"
       onChange={(e) => setCode(e)}
       name="UNIQUE_ID_OF_DIV"
