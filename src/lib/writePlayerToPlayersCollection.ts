@@ -11,7 +11,6 @@ export default async function writePlayerToPlayersCollection(
   const { email, displayName, photoURL, uid } = userInfo;
 
   await setDoc(doc(db, "players", uid), {
-    email,
     displayName,
     photoURL,
     uid,
