@@ -69,7 +69,6 @@ export default function Home() {
   useEffect(() => {
     (async function addPlayer() {
       if (user && nextGameRef) {
-        console.log(user);
         const db = getFirestore(app);
         await setDoc(doc(db, `games/${nextGameRef.id}/players/${user.uid}`), {
           id: user.uid,
@@ -78,7 +77,6 @@ export default function Home() {
           status: "alive",
           score: 0,
         });
-        console.log(`game/${nextGameRef.id}/players/${user.uid}`);
       }
     })();
   }, [user, nextGameRef]);

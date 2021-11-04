@@ -17,8 +17,6 @@ export default async function getWaitingGame() {
   const gameDoc = querySnapshot.docs[0];
 
   const unsub = onSnapshot(waitingGameQuery, (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-      console.log(change.doc.data());
-    });
+    snapshot.docChanges().forEach((change) => {});
   });
 }

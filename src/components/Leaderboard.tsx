@@ -16,7 +16,6 @@ interface Props {
 }
 
 export default function Leaderboard({ players, style }: Props) {
-  console.log(players);
   return (
     <TableContainer
       component={Paper}

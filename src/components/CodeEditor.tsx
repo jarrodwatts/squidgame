@@ -15,7 +15,6 @@ export default function CodeEditor({
   setCode,
   defaultText,
 }: Props): ReactElement {
-  console.log(defaultText);
   return (
     <AceEditor
       style={{ width: "100%" }}

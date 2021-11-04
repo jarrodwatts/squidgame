@@ -69,8 +69,6 @@ export default function GameId({}: Props): ReactElement {
         const { questionOneId, questionTwoId, questionThreeId } =
           docSnap.data() as DocumentData;
 
-        console.log(questionOneId, questionTwoId, questionThreeId);
-
         // Now get those questions from the question collection
         const q = query(
           collection(db, "questions"),

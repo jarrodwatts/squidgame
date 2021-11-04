@@ -10,7 +10,6 @@ interface Props {}
 export default function Auth({}: Props): ReactElement {
   async function handleSignup() {
     const userInfo = await signupUserWithGithub();
-    console.log(userInfo);
     const writeResult = await writePlayerToPlayersCollection(userInfo.user);
   }
 

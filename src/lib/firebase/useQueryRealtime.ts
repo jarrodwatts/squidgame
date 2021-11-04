@@ -24,7 +24,6 @@ export default function useQueryRealtime(
   const waitingGameQuery = query(gamesRef, where(fieldName, opStr, fieldValue));
 
   const unsub = onSnapshot(waitingGameQuery, (snap) => {
-    console.log(snap.docs[0]);
     return snap.docs[0];
   });
 }

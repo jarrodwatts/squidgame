@@ -8,7 +8,6 @@ export default async function runCodeOnPiston(
   acceptedAnswers: string[]
 ) {
   try {
-    console.log(args);
     const client = piston({ server: "https://emkc.org" });
 
     const result = await client.execute(language, code, {
@@ -18,8 +17,6 @@ export default async function runCodeOnPiston(
     const output = result.run.output;
     // Trim output to exclude new lines and \n
     const outputString = output.trim();
-
-    console.log("Expected:", acceptedAnswers, "Provided:", outputString);
 
     if (acceptedAnswers.includes(outputString)) {
       return {

@@ -7,7 +7,6 @@ export default async function writePlayerToPlayersCollection(
 ): Promise<any> {
   const db = getFirestore(app);
 
-  console.log(userInfo);
   const { email, displayName, photoURL, uid } = userInfo;
 
   await setDoc(doc(db, "players", uid), {
