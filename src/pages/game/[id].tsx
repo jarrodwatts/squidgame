@@ -105,7 +105,10 @@ export default function GameId({}: Props): ReactElement {
       language,
       code,
       Object.values(questions[activeQuestionIndex].args),
-      Object.values(questions[activeQuestionIndex].acceptedAnswers)
+      Object.values(questions[activeQuestionIndex].acceptedAnswers),
+      user,
+      questions[activeQuestionIndex].id,
+      id as string
     );
     setOutput(result?.success);
     setOutputContent({
